@@ -10,20 +10,46 @@
     tools:context="com.example.tutorial_buddy_test.MainActivity">
 
 
+    <Button
+        android:id="@+id/button_MoveWheelStraight"
+        android:layout_width="201dp"
+        android:layout_height="48dp"
+        android:text="Move Wheels Straight "
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.207"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.608" />
+
+    <Button
+        android:id="@+id/button_enable_Rotation180"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:text="Rotation 180"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.911"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.157" />
+
     <TextView
         android:id="@+id/textView1"
-        android:layout_width="197dp"
-        android:layout_height="55dp"
+        android:layout_width="315dp"
+        android:layout_height="72dp"
         android:text="wheels are on"
         android:textColor="#000000"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.687"
+        app:layout_constraintHorizontal_bias="0.937"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.16" />
+        app:layout_constraintVertical_bias="0.651" />
 
     <Button
         android:id="@+id/button_advance"
@@ -39,6 +65,19 @@
         app:layout_constraintVertical_bias="0.385" />
 
     <Button
+        android:id="@+id/button_MoveRotate"
+        android:layout_width="201dp"
+        android:layout_height="48dp"
+        android:text="Auto Rotate "
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.913"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.388" />
+
+    <Button
         android:id="@+id/button_enable_wheels"
         android:layout_width="200dp"
         android:layout_height="50dp"
@@ -49,6 +88,19 @@
         app:layout_constraintHorizontal_bias="0.209"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.152" />
+        app:layout_constraintVertical_bias="0.157" />
+
+    <Button
+        android:id="@+id/button_Stop"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:text="Stop"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.21"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.811" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
