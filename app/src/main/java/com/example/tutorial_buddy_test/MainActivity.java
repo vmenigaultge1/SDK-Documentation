@@ -1,7 +1,5 @@
 package com.example.tutorial_buddy_test;
 
-
-
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
@@ -51,16 +49,10 @@ public class MainActivity extends BuddyActivity {
         mButtonEnable.setOnClickListener(view -> EnableWheels());//function called to enable the wheels of the robbot
         mButtonEnableRotateAuto.setOnClickListener(v -> RotateNonStop());//rotate undefinitly
 
-
-
-
-
-
     }
 
-
     private void MoveWheelsStraight() {//ongoing work
-        BuddySDK.USB.moveWheelStraight(10000F, new IUsbCommadRsp.Stub() {//if speed > 0 goes forward if speed<0 goes backward
+        BuddySDK.USB.moveWheelStraight(0.5F, new IUsbCommadRsp.Stub() {//if speed > 0 goes forward if speed<0 goes backward
             @Override
             public void onSuccess(String s) throws RemoteException {//in case of success we want an answer
                 Log.i(TAG, "Straight Working : "+s);// we show on the screen the success
