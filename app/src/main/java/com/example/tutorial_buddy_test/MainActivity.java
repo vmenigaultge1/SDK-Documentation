@@ -25,8 +25,8 @@ public class MainActivity extends BuddyActivity {
     protected void onCreate(Bundle savedInstanceState) {
          Log.i(TAG, "wheels create");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
+        setContentView(R.layout.activity_newmain);
+        /*
         //link with user interface
         mText1 = findViewById(R.id.textView1);
         //linking the id of the buttons of Layout to buttons in the code
@@ -48,7 +48,7 @@ public class MainActivity extends BuddyActivity {
 
         mButtonEnable.setOnClickListener(view -> EnableWheels());//function called to enable the wheels of the robbot
         mButtonEnableRotateAuto.setOnClickListener(v -> RotateNonStop());//rotate undefinitly
-
+*/
     }
 
     private void MoveWheelsStraight() {//ongoing work
@@ -71,6 +71,10 @@ public class MainActivity extends BuddyActivity {
         //speed is in deg/seconds
         float iSpeed = 60F;//definition of the speed (>0 to go forward , <0 to go backward)
         float iDegree = 180F;//degree of rotation
+
+        //---------------------------------
+        //BuddySDK.Actuators.getLeftWheelStatus();
+        //---------------------------------
 
         //function to rotate Buddy with a certain angle
         BuddySDK.USB.rotateBuddy(iSpeed, iDegree, new IUsbCommadRsp.Stub() {
