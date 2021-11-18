@@ -1,10 +1,20 @@
 package com.example.tutorial_buddy_test;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.bfr.buddy.usb.shared.IUsbCommadRsp;
 import com.bfr.buddy.utils.events.EventItem;
 import com.bfr.buddysdk.BuddyActivity;
@@ -12,82 +22,146 @@ import com.bfr.buddysdk.BuddySDK;
 import com.example.testapplication.R;
 
 
-public class MainActivity extends BuddyActivity {
-    TextView mText1;//defining a text parameter so we show the text we want
-    Button mButtonEnable ;//definning buttons Enable ( will be used to enable wheels motors )
-    Button mButtonAdvance;//definning buttons Advance ( will be used to make buddy advance )
-    Button mButtonMoveWheelStraight;//button to start moving straight non stop
-    Button mButtonEnableRotateAuto;
-    Button mButtonStop;
-    Button mButtonRotation180;
-    String TAG = "Message" ;
+public class MainActivity extends BuddyActivity implements View.OnClickListener {
+
+    //Button for each move
+    Button moveForward;
+    Button moveNonStopForward;
+    Button turn;
+    Button nonStopTurn;
+    Button stopMotors;
+
+    //Edit Text for the input of speed, distance and angle
+    EditText speedMoveForward;
+    EditText distanceMoveForward;
+    EditText speedMoveNonStopForward;
+    EditText speedTurn;
+    EditText angleTurn;
+    EditText speedNonStopTurn;
+
+    //TextView for the wheels status
+    TextView leftWheelStatus;
+    TextView rightWheelStatus;
+    TextView test;
+
+    //Switch enable wheels
+    Switch enableLeftWheel;
+    Switch enableRightWheel;
+
+    String TAG = "Move Tuto" ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-         Log.i(TAG, "wheels create");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_newmain);
-        /*
-        //link with user interface
-        mText1 = findViewById(R.id.textView1);
-        //linking the id of the buttons of Layout to buttons in the code
-        mButtonRotation180 = findViewById(R.id.button_enable_Rotation180);//180° rotation
-        mButtonEnable=findViewById(R.id.button_enable_wheels);//activate the wheels motor
-        mButtonAdvance = findViewById(R.id.button_advance);//advance of 50 cm 0.5m/s
-        mButtonMoveWheelStraight  = findViewById(R.id.button_MoveWheelStraight);//button to start tests
-        mButtonStop = findViewById(R.id.button_Stop);// stop button
-        mButtonEnableRotateAuto = findViewById(R.id.button_MoveRotate);//rotation non stop
-        mText1.setText(" "); //setting no text                                                         //Log.i(TAG, "wheels 1");
 
+        //Button linking
+        moveForward = (Button) findViewById(R.id.BstartMvF);
+        moveNonStopForward = (Button) findViewById(R.id.BstartNonSMv);
+        turn = (Button) findViewById(R.id.BstartTurn);
+        nonStopTurn = (Button) findViewById(R.id.BstartNonSTurn);
+        stopMotors = (Button) findViewById(R.id.BstopMotors);
 
+        moveForward.setOnClickListener(this);
+        moveNonStopForward.setOnClickListener(this);
+        turn.setOnClickListener(this);
+        nonStopTurn.setOnClickListener(this);
+        stopMotors.setOnClickListener(this);
 
-        mButtonStop.setOnClickListener(view -> StopMotors());//function called to stop motors and moving the robbot
-       // mButtonAdvance.setOnClickListener(v -> AdvanceFunct());//to advance with speed and distance defined
+        //Edit Text linking
+        speedMoveForward = (EditText) findViewById(R.id.EDchooseSpeedMvF);
+        distanceMoveForward = (EditText) findViewById(R.id.EDchooseDistMvF);
+        speedMoveNonStopForward = (EditText) findViewById(R.id.EDchooseSpeedNonSMv);
+        speedTurn = (EditText) findViewById(R.id.EDchooseSpeedTurn);
+        angleTurn = (EditText) findViewById(R.id.EDchooseAngleTurn);
+        speedNonStopTurn = (EditText) findViewById(R.id.EDchooseSpeedNonSTurn);
 
-        mButtonRotation180.setOnClickListener(view -> rotate180());//to rotate at a given angle
+        //Switch linking
+        enableLeftWheel = (Switch) findViewById(R.id.SWenableLW);
+        enableRightWheel = (Switch) findViewById(R.id.SWenableRW);
 
+        //enableLeftWheel.setOnClickListener(this);
+        //enableRightWheel.setOnClickListener(this);
+        Log.i(TAG,"onCreate finished");
 
-        mButtonEnable.setOnClickListener(view -> EnableWheels());//function called to enable the wheels of the robbot
-        mButtonEnableRotateAuto.setOnClickListener(v -> RotateNonStop());//rotate undefinitly
-*/
+        test = findViewById(R.id.header);
     }
 
-    private void MoveWheelsStraight() {//ongoing work
-        BuddySDK.USB.moveWheelStraight(0.5F, new IUsbCommadRsp.Stub() {//if speed > 0 goes forward if speed<0 goes backward
+    //Move straight forward non stop
+    //Speed : m/s (> 0 goes forward if speed<0 goes backward)
+    private void MoveWheelsStraight(float speed) {//ongoing work
+        BuddySDK.USB.moveWheelStraight(speed, new IUsbCommadRsp.Stub() {
             @Override
             public void onSuccess(String s) throws RemoteException {//in case of success we want an answer
                 Log.i(TAG, "Straight Working : "+s);// we show on the screen the success
-                mText1.setText("Straight working");// we show on the screen the success
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MainActivity.this,"Success", Toast.LENGTH_SHORT).show();// we show on the screen the success
+                            }
+                        });
+                    }
+                }).start();
             }
 
             @Override
             public void onFailed(String s) throws RemoteException {
                 Log.i(TAG, "movingStraight Failed : "+s);// we show the failure + the responsible for failure
-                mText1.setText("Straight Failed");//// we show on the screen the failure
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MainActivity.this,"Failed", Toast.LENGTH_SHORT).show();//// we show on the screen the failure
+                            }
+                        });
+                    }
+                }).start();
             }
         });
     }
 
-    private void rotate180() {//function in charge of rotate buddy of a defined angle and speed
-        //speed is in deg/seconds
-        float iSpeed = 60F;//definition of the speed (>0 to go forward , <0 to go backward)
-        float iDegree = 180F;//degree of rotation
-
-        //---------------------------------
-        //BuddySDK.Actuators.getLeftWheelStatus();
-        //---------------------------------
+    //function in charge of rotate buddy of a defined angle and speed
+    //Speed : in deg/s (>0 to go forward , <0 to go backward)
+    //Degree : degree of rotation
+    private void Rotate(float speed, float degree) {
 
         //function to rotate Buddy with a certain angle
-        BuddySDK.USB.rotateBuddy(iSpeed, iDegree, new IUsbCommadRsp.Stub() {
+        BuddySDK.USB.rotateBuddy(speed, degree, new IUsbCommadRsp.Stub() {
 
             @Override
             public void onSuccess(String s) throws RemoteException {//in case of success we want an answer
-                Log.i(TAG, "Rotaion 180 Working");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MainActivity.this,"Rotation finished", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }).start();
             }
 
             @Override
             public void onFailed(String s) throws RemoteException {
                 Log.i(TAG, "Rotaion 180 notWorking : "+s);//will show the error in the logcat
-                mText1.setText("Fail to rotate : 180");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MainActivity.this,"Failed", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }).start();
             }
         });
 
@@ -98,30 +172,47 @@ public class MainActivity extends BuddyActivity {
         BuddySDK.USB.emergencyStopMotors(new IUsbCommadRsp.Stub() {
             @Override
             public void onSuccess(String s) throws RemoteException {//in case of success we want an answer
-                mText1.setText("Motor Stopped");// we show on the screen the success
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MainActivity.this,"Motors stopped", Toast.LENGTH_SHORT).show();// we show on the screen the success
+                            }
+                        });
+                    }
+                }).start();
             }
 
             @Override
             public void onFailed(String s) throws RemoteException {//in case of failure we want to have the information
-                // we show on the screen the
-                mText1.setText("Fail to Stop Motors");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MainActivity.this,"Failed", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }).start();
                 Log.i(TAG, "StopMotors notWorking : "+s);
             }
         });
     }
 
-
-    private void EnableWheels(){//created a function wich calls enable the wheels of the robbot
-
-        int turnOnRightWeel = 1;//setting the right weel motor on On of "int" type (On=1) (Off=0)
-        int turnOnLeftWeel = 1;//setting the Left weel motor on On of "int" type (On=1) (Off=0)
-
-        BuddySDK.USB.enableWheels(turnOnLeftWeel, turnOnRightWeel, new IUsbCommadRsp.Stub() {   //function which enable the wheels
+    //Enable the wheels of the robot
+    //turnOnLeftWheel : setting the Left wheel motor on On of "int" type (On=1) (Off=0)
+    //turnOnRightWheel : setting the right wheel motor on On of "int" type (On=1) (Off=0)
+    private void EnableWheels(int turnOnLeftWheel, int turnOnRightWheel){
+        Log.i(TAG,"left : " + turnOnLeftWheel + " right : " + turnOnRightWheel);
+        BuddySDK.USB.enableWheels(turnOnLeftWheel, turnOnRightWheel, new IUsbCommadRsp.Stub() {   //function which enable the wheels
 
             @Override
             public void onSuccess(String s) throws RemoteException {
                 //in Case of sucess of enabeling the wheels we decide to show some text at screen
-                mText1.setText("wheels are enabled ");
                 Log.i(TAG, "wheels are enabled");
             }
 
@@ -131,64 +222,208 @@ public class MainActivity extends BuddyActivity {
                Log.i(TAG, "Wheels enable failed :" + s);
             }
         });
-    // Listener for button to make the robot go forward or backward
-           mButtonAdvance.setOnClickListener(view -> AdvanceFunct());
-    //in case of click on the button, call of the function AdvanceFunct()
-        mButtonMoveWheelStraight.setOnClickListener(view -> MoveWheelsStraight());//to move straight non stop
-        BuddySDK.USB.getMotorBoardStatus(new IUsbCommadRsp.Stub() {//motor status
-            @Override
-            public void onSuccess(String s) throws RemoteException {
-                Log.i(TAG, "onSuccess: "+s);
-            }
+    }
+    //Rotate the robot
+    //Speed : deg/s (< 0 turn clockwise if speed >0 turn counterclockwise)
+    private void RotateNonStop(float speed)  {//ongoing work
 
-            @Override
-            public void onFailed(String s) throws RemoteException {
-                Log.i(TAG, "onFailed: "+s);
-            }
-        });
-}
-
-    private void RotateNonStop()  {//ongoing work
-//rotate the robot
-        BuddySDK.USB.WheelRotate(-0.5F, new IUsbCommadRsp.Stub() {//if speed < 0 turn clockwise if speed >0 turn counterclockwise
+        BuddySDK.USB.WheelRotate(speed, new IUsbCommadRsp.Stub() {
 
             @Override
             public void onSuccess(String s) throws RemoteException {//in success case show this :
                 Log.i(TAG, "Rotate onSuccess: ");
-                mText1.setText("rotate working");
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MainActivity.this,"Success", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }).start();
             }
 
             @Override
             public void onFailed(String s) throws RemoteException {//in failure case show this :
                Log.i(TAG, "Rotate onFailed: " + s);
-               mText1.setText("Rotate failure"); }
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(MainActivity.this,"Failed", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }).start();
+            }
         });
 
     }
 
 
-    //function called for clicking on the Advance button
-    private void AdvanceFunct() {//function working
-        float speed = 0.5F;//definition of the speed (>0 to go forward , <0 to go backward)
-        float distance = 1F;//definition of the distance to pracour(ALWAYS>0)
+    //Move forward
+    //Speed : (>0 to go forward , <0 to go backward)
+    //Distance : Travel distance (ALWAYS>0)
+    private void Move(float speed, float distance) {
 
-        //call of the function to make buddy go forward or backwars
+        //call of the function to make buddy go forward or backwards
             BuddySDK.USB.moveBuddy(speed, distance, new IUsbCommadRsp.Stub() {
                 @Override
                 public void onSuccess(String s) throws RemoteException {
-                    Log.i(TAG, "AdvanceFunct: sucess");//in case of success show in the logcat window 'sucess'
-
+                    Log.i(TAG, "Move: success");//in case of success show in the logcat window 'success'
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(MainActivity.this,"Destination reached", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }).start();
                 }
 
                 @Override
                 public void onFailed(String s) throws RemoteException {//in case of failure to achieve this function
-                    Log.i(TAG, "AdvanceFunct: fail : " + s);//show in the logcat window a message
-                    mText1.setText("Fail to advance");//show on the screen of the robot 'Fail to advance'
+                    Log.i(TAG, "Move: fail : " + s);//show in the logcat window a message
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(MainActivity.this,"Failed", Toast.LENGTH_SHORT).show();//show on the screen of the robot 'Fail to advance'
+                                }
+                            });
+                        }
+                    }).start();
                 }
             });
     }
+
     @Override
-    public void onSDKReady() {}
+    protected void onStop() {
+        super.onStop();
+        EnableWheels(0,0);
+    }
+
     @Override
-    public void onEvent(EventItem eventItem) {}
+    protected void onDestroy() {
+        super.onDestroy();
+        EnableWheels(0,0);
+    }
+
+
+    @Override
+    public void onSDKReady() {
+
+        //Text view linking
+        //To put on onSDKReady because sometimes onSDKReady finish before onCreate
+        //leftWheelStatus = (TextView) findViewById(R.id.TVenableStatusLW);
+        //rightWheelStatus = (TextView) findViewById(R.id.TVenableStatusRW);
+        //test = findViewById(R.id.header);
+        test.setText("Pat");
+
+
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    test.setText(BuddySDK.Actuators.getLeftWheelStatus());
+                    //leftWheelStatus.setText(BuddySDK.Actuators.getLeftWheelStatus());
+                    //rightWheelStatus.setText(BuddySDK.Actuators.getRightWheelStatus());
+                }
+
+            }
+        }).start();
+
+        Log.i(TAG,"onSDKReady finished");
+    }
+
+    @Override
+    public void onEvent(EventItem eventItem) { }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()){
+            case R.id.BstartMvF:
+                    //Check input and Move Forward
+                    if (!speedMoveForward.getText().toString().equals("") && !distanceMoveForward.getText().toString().equals("") &&
+                            isInputValid(speedMoveForward.getText().toString()) && isInputValid(distanceMoveForward.getText().toString())) {
+                        Move(Float.parseFloat(speedMoveForward.getText().toString()), Float.parseFloat(distanceMoveForward.getText().toString()));
+                    } else {
+                        Log.i(TAG, "Speed or distance input error");
+                        Toast.makeText(MainActivity.this, "Speed or distance input error", Toast.LENGTH_SHORT).show();
+                    }
+                break;
+
+            case R.id.BstartNonSMv:
+                    //Check input and Move Non Stop
+                    if (!speedMoveNonStopForward.getText().toString().equals("") && isInputValid(speedMoveNonStopForward.getText().toString())) {
+                        MoveWheelsStraight(Float.parseFloat(speedMoveNonStopForward.getText().toString()));
+                    } else {
+                        Log.i(TAG, "Speed input error");
+                        Toast.makeText(MainActivity.this, "Speed input error", Toast.LENGTH_SHORT).show();
+                    }
+                break;
+
+            case R.id.BstartTurn:
+                    //Check input and Turn
+                    if (!speedTurn.getText().toString().equals("") && !angleTurn.getText().toString().equals("") &&
+                            isInputValid(speedTurn.getText().toString()) && isInputValid(angleTurn.getText().toString())) {
+                        Rotate(Float.parseFloat(speedTurn.getText().toString()), Float.parseFloat(angleTurn.getText().toString()));
+                    } else {
+                        Log.i(TAG, "Speed or angle input error");
+                        Toast.makeText(MainActivity.this, "Speed or angle input error", Toast.LENGTH_SHORT).show();
+                    }
+                break;
+
+            case R.id.BstartNonSTurn:
+                    //Check input and Turn Non Stop
+                    if (!speedNonStopTurn.getText().toString().equals("") && isInputValid(speedNonStopTurn.getText().toString())) {
+                        RotateNonStop(Float.parseFloat(speedNonStopTurn.getText().toString()));
+                    } else {
+                        Log.i(TAG, "Speed input error");
+                        Toast.makeText(MainActivity.this, "Speed input error", Toast.LENGTH_SHORT).show();
+                    }
+                break;
+
+            case R.id.BstopMotors:
+                //Stop motors
+                //StopMotors();
+                //Toast.makeText(MainActivity.this, BuddySDK.Actuators.getLeftWheelStatus(), Toast.LENGTH_SHORT).show();
+                break;
+
+            /*case R.id.SWenableLW:
+                //Enable left wheel
+                EnableWheels(((Switch) v).isChecked() ? 1 : 0, enableRightWheel.isChecked() ? 1 : 0);
+                //leftWheelStatus.setText("Status : " + BuddySDK.Actuators.getLeftWheelStatus());
+                break;
+
+            case R.id.SWenableRW:
+                //Enable right wheel
+                EnableWheels(enableLeftWheel.isChecked() ? 1 : 0, ((Switch) v).isChecked() ? 1 : 0);
+                //rightWheelStatus.setText("Status : " + BuddySDK.Actuators.getRightWheelStatus());
+                break;*/
+        }
+    }
+
+    //Check if the Edit Text is a valid float input
+    public boolean isInputValid(String inputText){
+        try{
+            float val = Float.parseFloat(inputText);
+            return true;
+        }
+        catch (NumberFormatException e){
+            return false;
+        }
+    }
+
+
 }
