@@ -80,11 +80,14 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
         enableLeftWheel = (Switch) findViewById(R.id.SWenableLW);
         enableRightWheel = (Switch) findViewById(R.id.SWenableRW);
 
-        //enableLeftWheel.setOnClickListener(this);
-        //enableRightWheel.setOnClickListener(this);
+        //Text view linking
+        leftWheelStatus = (TextView) findViewById(R.id.TVenableStatusLW);
+        rightWheelStatus = (TextView) findViewById(R.id.TVenableStatusRW);
+
+        enableLeftWheel.setOnClickListener(this);
+        enableRightWheel.setOnClickListener(this);
         Log.i(TAG,"onCreate finished");
 
-        test = findViewById(R.id.header);
     }
 
     //Move straight forward non stop
@@ -167,8 +170,8 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
 
     }
 
-    private void StopMotors() {//created function to call the stop function of the motors
-        //function to stop motors
+    //function to stop motors
+    private void StopMotors() {
         BuddySDK.USB.emergencyStopMotors(new IUsbCommadRsp.Stub() {
             @Override
             public void onSuccess(String s) throws RemoteException {//in case of success we want an answer
@@ -322,26 +325,26 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
     @Override
     public void onSDKReady() {
 
-        //Text view linking
-        //To put on onSDKReady because sometimes onSDKReady finish before onCreate
-        //leftWheelStatus = (TextView) findViewById(R.id.TVenableStatusLW);
-        //rightWheelStatus = (TextView) findViewById(R.id.TVenableStatusRW);
-        //test = findViewById(R.id.header);
-        test.setText("Pat");
-
-
-
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while (true) {
-                    test.setText(BuddySDK.Actuators.getLeftWheelStatus());
-                    //leftWheelStatus.setText(BuddySDK.Actuators.getLeftWheelStatus());
-                    //rightWheelStatus.setText(BuddySDK.Actuators.getRightWheelStatus());
+                while(true){
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            leftWheelStatus.setText("Status : " + BuddySDK.Actuators.getLeftWheelStatus());
+                            rightWheelStatus.setText("Status : " + BuddySDK.Actuators.getRightWheelStatus());
+                        }
+                    });
                 }
-
             }
         }).start();
+
 
         Log.i(TAG,"onSDKReady finished");
     }
@@ -354,6 +357,7 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
         switch(v.getId()){
             case R.id.BstartMvF:
                     //Check input and Move Forward
+                if(BuddySDK.Actuators.getLeftWheelStatus().equals("STOP") && BuddySDK.Actuators.getRightWheelStatus().equals("STOP")) {
                     if (!speedMoveForward.getText().toString().equals("") && !distanceMoveForward.getText().toString().equals("") &&
                             isInputValid(speedMoveForward.getText().toString()) && isInputValid(distanceMoveForward.getText().toString())) {
                         Move(Float.parseFloat(speedMoveForward.getText().toString()), Float.parseFloat(distanceMoveForward.getText().toString()));
@@ -361,9 +365,16 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
                         Log.i(TAG, "Speed or distance input error");
                         Toast.makeText(MainActivity.this, "Speed or distance input error", Toast.LENGTH_SHORT).show();
                     }
+                }
+                else
+                {
+                    Log.i(TAG, "Wheels disable");
+                    Toast.makeText(MainActivity.this, "Enable wheels before", Toast.LENGTH_SHORT).show();
+                }
                 break;
 
             case R.id.BstartNonSMv:
+                if(BuddySDK.Actuators.getLeftWheelStatus().equals("STOP") && BuddySDK.Actuators.getRightWheelStatus().equals("STOP")) {
                     //Check input and Move Non Stop
                     if (!speedMoveNonStopForward.getText().toString().equals("") && isInputValid(speedMoveNonStopForward.getText().toString())) {
                         MoveWheelsStraight(Float.parseFloat(speedMoveNonStopForward.getText().toString()));
@@ -371,9 +382,16 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
                         Log.i(TAG, "Speed input error");
                         Toast.makeText(MainActivity.this, "Speed input error", Toast.LENGTH_SHORT).show();
                     }
+                }
+                else
+                {
+                    Log.i(TAG, "Wheels disable");
+                    Toast.makeText(MainActivity.this, "Enable wheels before", Toast.LENGTH_SHORT).show();
+                }
                 break;
 
             case R.id.BstartTurn:
+                if(BuddySDK.Actuators.getLeftWheelStatus().equals("STOP") && BuddySDK.Actuators.getRightWheelStatus().equals("STOP")) {
                     //Check input and Turn
                     if (!speedTurn.getText().toString().equals("") && !angleTurn.getText().toString().equals("") &&
                             isInputValid(speedTurn.getText().toString()) && isInputValid(angleTurn.getText().toString())) {
@@ -382,9 +400,16 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
                         Log.i(TAG, "Speed or angle input error");
                         Toast.makeText(MainActivity.this, "Speed or angle input error", Toast.LENGTH_SHORT).show();
                     }
+                }
+                else
+                {
+                    Log.i(TAG, "Wheels disable");
+                    Toast.makeText(MainActivity.this, "Enable wheels before", Toast.LENGTH_SHORT).show();
+                }
                 break;
 
             case R.id.BstartNonSTurn:
+                if(BuddySDK.Actuators.getLeftWheelStatus().equals("STOP") && BuddySDK.Actuators.getRightWheelStatus().equals("STOP")) {
                     //Check input and Turn Non Stop
                     if (!speedNonStopTurn.getText().toString().equals("") && isInputValid(speedNonStopTurn.getText().toString())) {
                         RotateNonStop(Float.parseFloat(speedNonStopTurn.getText().toString()));
@@ -392,15 +417,21 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
                         Log.i(TAG, "Speed input error");
                         Toast.makeText(MainActivity.this, "Speed input error", Toast.LENGTH_SHORT).show();
                     }
+                }
+                else
+                {
+                    Log.i(TAG, "Wheels disable");
+                    Toast.makeText(MainActivity.this, "Enable wheels before", Toast.LENGTH_SHORT).show();
+                }
                 break;
 
             case R.id.BstopMotors:
                 //Stop motors
-                //StopMotors();
-                //Toast.makeText(MainActivity.this, BuddySDK.Actuators.getLeftWheelStatus(), Toast.LENGTH_SHORT).show();
+                StopMotors();
+                Toast.makeText(MainActivity.this, BuddySDK.Actuators.getLeftWheelStatus(), Toast.LENGTH_SHORT).show();
                 break;
 
-            /*case R.id.SWenableLW:
+            case R.id.SWenableLW:
                 //Enable left wheel
                 EnableWheels(((Switch) v).isChecked() ? 1 : 0, enableRightWheel.isChecked() ? 1 : 0);
                 //leftWheelStatus.setText("Status : " + BuddySDK.Actuators.getLeftWheelStatus());
@@ -410,7 +441,7 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
                 //Enable right wheel
                 EnableWheels(enableLeftWheel.isChecked() ? 1 : 0, ((Switch) v).isChecked() ? 1 : 0);
                 //rightWheelStatus.setText("Status : " + BuddySDK.Actuators.getRightWheelStatus());
-                break;*/
+                break;
         }
     }
 
