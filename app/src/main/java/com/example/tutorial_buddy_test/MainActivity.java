@@ -38,7 +38,6 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
     //TextView for the wheels status
     TextView leftWheelStatus;
     TextView rightWheelStatus;
-    TextView test;
 
     //Switch enable wheels
     Switch enableLeftWheel;
@@ -211,6 +210,7 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
             }
         });
     }
+
     //Rotate the robot
     //Speed : deg/s (< 0 turn clockwise if speed >0 turn counterclockwise)
     private void RotateNonStop(float speed)  {//ongoing work
@@ -342,8 +342,9 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.BstartMvF:
-                    //Check input and Move Forward
+                //Check if wheels are enable
                 if(BuddySDK.Actuators.getLeftWheelStatus().equals("STOP") && BuddySDK.Actuators.getRightWheelStatus().equals("STOP")) {
+                    //Check input and Move Forward
                     if (!speedMoveForward.getText().toString().equals("") && !distanceMoveForward.getText().toString().equals("") &&
                             isInputValid(speedMoveForward.getText().toString()) && isInputValid(distanceMoveForward.getText().toString())) {
                         Move(Float.parseFloat(speedMoveForward.getText().toString()), Float.parseFloat(distanceMoveForward.getText().toString()));
@@ -360,6 +361,7 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
                 break;
 
             case R.id.BstartNonSMv:
+                //Check if wheels are enable
                 if(BuddySDK.Actuators.getLeftWheelStatus().equals("STOP") && BuddySDK.Actuators.getRightWheelStatus().equals("STOP")) {
                     //Check input and Move Non Stop
                     if (!speedMoveNonStopForward.getText().toString().equals("") && isInputValid(speedMoveNonStopForward.getText().toString())) {
@@ -377,6 +379,7 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
                 break;
 
             case R.id.BstartTurn:
+                //Check if wheels are enable
                 if(BuddySDK.Actuators.getLeftWheelStatus().equals("STOP") && BuddySDK.Actuators.getRightWheelStatus().equals("STOP")) {
                     //Check input and Turn
                     if (!speedTurn.getText().toString().equals("") && !angleTurn.getText().toString().equals("") &&
@@ -395,6 +398,7 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
                 break;
 
             case R.id.BstartNonSTurn:
+                //Check if wheels are enable
                 if(BuddySDK.Actuators.getLeftWheelStatus().equals("STOP") && BuddySDK.Actuators.getRightWheelStatus().equals("STOP")) {
                     //Check input and Turn Non Stop
                     if (!speedNonStopTurn.getText().toString().equals("") && isInputValid(speedNonStopTurn.getText().toString())) {
