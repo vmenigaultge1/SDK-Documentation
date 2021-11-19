@@ -1,14 +1,10 @@
 package com.example.tutorial_buddy_test;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
@@ -53,7 +49,7 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_newmain);
+        setContentView(R.layout.activity_main);
 
         //Button linking
         moveForward = (Button) findViewById(R.id.BstartMvF);
@@ -324,13 +320,17 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
             }
         }).start();
 
-        if(!BuddySDK.Actuators.getLeftWheelStatus().equals("DISBALE")) {
-            enableLeftWheel.setChecked(true);
-        }
+        //Waiting for the SDK to be ready before updating switch
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                if(BuddySDK.Actuators.getLeftWheelStatus().equals("STOP"))
+                    enableLeftWheel.setChecked(true);
 
-        if(!BuddySDK.Actuators.getRightWheelStatus().equals("DISABLE")) {
-            enableRightWheel.setChecked(true);
-        }
+                if(BuddySDK.Actuators.getRightWheelStatus().equals("STOP"))
+                    enableRightWheel.setChecked(true);
+            }
+        }, 5);   //5 ms
 
         Log.i(TAG,"onSDKReady finished");
     }
