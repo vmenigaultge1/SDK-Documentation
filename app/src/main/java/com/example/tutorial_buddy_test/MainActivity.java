@@ -341,6 +341,8 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
     @Override
     public void onClick(View v) {
         switch(v.getId()){
+
+            //Move Forward
             case R.id.BstartMvF:
                 //Check if wheels are enable
                 if(BuddySDK.Actuators.getLeftWheelStatus().equals("STOP") && BuddySDK.Actuators.getRightWheelStatus().equals("STOP")) {
@@ -360,6 +362,7 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
                 }
                 break;
 
+            //Non stop Move
             case R.id.BstartNonSMv:
                 //Check if wheels are enable
                 if(BuddySDK.Actuators.getLeftWheelStatus().equals("STOP") && BuddySDK.Actuators.getRightWheelStatus().equals("STOP")) {
@@ -378,6 +381,7 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
                 }
                 break;
 
+            //Turn
             case R.id.BstartTurn:
                 //Check if wheels are enable
                 if(BuddySDK.Actuators.getLeftWheelStatus().equals("STOP") && BuddySDK.Actuators.getRightWheelStatus().equals("STOP")) {
@@ -397,6 +401,7 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
                 }
                 break;
 
+            //Turn Non stop
             case R.id.BstartNonSTurn:
                 //Check if wheels are enable
                 if(BuddySDK.Actuators.getLeftWheelStatus().equals("STOP") && BuddySDK.Actuators.getRightWheelStatus().equals("STOP")) {
@@ -415,17 +420,20 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
                 }
                 break;
 
+            //Stop motors
             case R.id.BstopMotors:
                 //Stop motors
                 StopMotors();
                 Toast.makeText(MainActivity.this, BuddySDK.Actuators.getLeftWheelStatus(), Toast.LENGTH_SHORT).show();
                 break;
 
+            //Switch left wheel enable
             case R.id.SWenableLW:
                 //Enable left wheel
                 EnableWheels(((Switch) v).isChecked() ? 1 : 0, enableRightWheel.isChecked() ? 1 : 0);
                 break;
 
+            //Switch right wheel enable
             case R.id.SWenableRW:
                 //Enable right wheel
                 EnableWheels(enableLeftWheel.isChecked() ? 1 : 0, ((Switch) v).isChecked() ? 1 : 0);
