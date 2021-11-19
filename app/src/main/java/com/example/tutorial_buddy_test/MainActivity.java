@@ -138,17 +138,6 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
 
             @Override
             public void onSuccess(String s) throws RemoteException {//in case of success we want an answer
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(MainActivity.this,"Rotation finished", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }).start();
             }
 
             @Override
@@ -241,7 +230,7 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(MainActivity.this,"Success", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this,"Success", Toast.LENGTH_SHORT).show();// we show on the screen the success
                             }
                         });
                     }
@@ -278,17 +267,6 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
                 @Override
                 public void onSuccess(String s) throws RemoteException {
                     Log.i(TAG, "Move: success");//in case of success show in the logcat window 'success'
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(MainActivity.this,"Destination reached", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-                    }).start();
                 }
 
                 @Override
@@ -328,6 +306,7 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
         new Thread(new Runnable() {
             @Override
             public void run() {
+
                 while(true){
                     try {
                         Thread.sleep(100);
@@ -345,6 +324,13 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
             }
         }).start();
 
+        if(!BuddySDK.Actuators.getLeftWheelStatus().equals("DISBALE")) {
+            enableLeftWheel.setChecked(true);
+        }
+
+        if(!BuddySDK.Actuators.getRightWheelStatus().equals("DISABLE")) {
+            enableRightWheel.setChecked(true);
+        }
 
         Log.i(TAG,"onSDKReady finished");
     }
@@ -434,13 +420,11 @@ public class MainActivity extends BuddyActivity implements View.OnClickListener 
             case R.id.SWenableLW:
                 //Enable left wheel
                 EnableWheels(((Switch) v).isChecked() ? 1 : 0, enableRightWheel.isChecked() ? 1 : 0);
-                //leftWheelStatus.setText("Status : " + BuddySDK.Actuators.getLeftWheelStatus());
                 break;
 
             case R.id.SWenableRW:
                 //Enable right wheel
                 EnableWheels(enableLeftWheel.isChecked() ? 1 : 0, ((Switch) v).isChecked() ? 1 : 0);
-                //rightWheelStatus.setText("Status : " + BuddySDK.Actuators.getRightWheelStatus());
                 break;
         }
     }
