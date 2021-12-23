@@ -38,8 +38,6 @@ public class MainActivity extends BuddyActivity {
         mButtonEnableRotateAuto = findViewById(R.id.button_MoveRotate);//rotation non stop
         mText1.setText(" "); //setting no text                                                         //Log.i(TAG, "wheels 1");
 
-
-
         mButtonStop.setOnClickListener(view -> StopMotors());//function called to stop motors and moving the robbot
        // mButtonAdvance.setOnClickListener(v -> AdvanceFunct());//to advance with speed and distance defined
 
@@ -77,7 +75,7 @@ public class MainActivity extends BuddyActivity {
 
             @Override
             public void onSuccess(String s) throws RemoteException {//in case of success we want an answer
-                Log.i(TAG, "Rotaion 180 Working");
+                Log.i(TAG, "Rotaion 180 Working" + s );
             }
 
             @Override
@@ -117,8 +115,8 @@ public class MainActivity extends BuddyActivity {
             @Override
             public void onSuccess(String s) throws RemoteException {
                 //in Case of sucess of enabeling the wheels we decide to show some text at screen
-                mText1.setText("wheels are enabled ");
-                Log.i(TAG, "wheels are enabled");
+                mText1.setText("wheels are enabled " );
+                Log.i(TAG, "wheels are enabled"+ s);
             }
 
             @Override
@@ -146,11 +144,11 @@ public class MainActivity extends BuddyActivity {
 
     private void RotateNonStop()  {//ongoing work
 //rotate the robot
-        BuddySDK.USB.WheelRotate(-0.5F, new IUsbCommadRsp.Stub() {//if speed < 0 turn clockwise if speed >0 turn counterclockwise
+        BuddySDK.USB.WheelRotate(0.2F, new IUsbCommadRsp.Stub() {//if speed < 0 turn clockwise if speed >0 turn counterclockwise
 
             @Override
             public void onSuccess(String s) throws RemoteException {//in success case show this :
-                Log.i(TAG, "Rotate onSuccess: ");
+                Log.i(TAG, "Rotate onSuccess: " + s );
                 mText1.setText("rotate working");
             }
 
@@ -172,7 +170,7 @@ public class MainActivity extends BuddyActivity {
             BuddySDK.USB.moveBuddy(speed, distance, new IUsbCommadRsp.Stub() {
                 @Override
                 public void onSuccess(String s) throws RemoteException {
-                    Log.i(TAG, "AdvanceFunct: sucess");//in case of success show in the logcat window 'sucess'
+                    Log.i(TAG, "AdvanceFunct: " + s);//in case of success show in the logcat window 'sucess'
 
                 }
 
