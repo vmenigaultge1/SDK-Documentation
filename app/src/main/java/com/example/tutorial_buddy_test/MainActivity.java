@@ -128,7 +128,9 @@ public class MainActivity extends BuddyActivity {
     // Listener for button to make the robot go forward or backward
            mButtonAdvance.setOnClickListener(view -> AdvanceFunct());
     //in case of click on the button, call of the function AdvanceFunct()
+
         mButtonMoveWheelStraight.setOnClickListener(view -> MoveWheelsStraight());//to move straight non stop
+
         BuddySDK.USB.getMotorBoardStatus(new IUsbCommadRsp.Stub() {//motor status
             @Override
             public void onSuccess(String s) throws RemoteException {

@@ -14,7 +14,7 @@
         android:id="@+id/button_MoveWheelStraight"
         android:layout_width="201dp"
         android:layout_height="48dp"
-        android:text="Move Wheels Straight "
+        android:text="Continuous Advance"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,16 +25,16 @@
 
     <Button
         android:id="@+id/button_enable_Rotation180"
-        android:layout_width="200dp"
-        android:layout_height="50dp"
-        android:text="Rotation 180"
+        android:layout_width="255dp"
+        android:layout_height="48dp"
+        android:text="Defined Rotation"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.911"
+        app:layout_constraintHorizontal_bias="0.903"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.157" />
+        app:layout_constraintVertical_bias="0.162" />
 
     <TextView
         android:id="@+id/textView1"
@@ -55,7 +55,7 @@
         android:id="@+id/button_advance"
         android:layout_width="200dp"
         android:layout_height="50dp"
-        android:text="Advance"
+        android:text="Defined Advance"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -66,9 +66,9 @@
 
     <Button
         android:id="@+id/button_MoveRotate"
-        android:layout_width="201dp"
-        android:layout_height="48dp"
-        android:text="Auto Rotate "
+        android:layout_width="258dp"
+        android:layout_height="46dp"
+        android:text="Continuous Rotation"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
