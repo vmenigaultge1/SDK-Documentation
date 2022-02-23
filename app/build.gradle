@@ -6,7 +6,7 @@ android {
     compileSdk 30
 
     defaultConfig {
-        applicationId "com.example.tutorial_buddy_test"
+        applicationId "com.example.TutoBuddyMotion"
         minSdk 28
         targetSdk 30
         versionCode 1

@@ -1,4 +1,4 @@
-package com.example.tutorial_buddy_test;
+package com.example.TutoBuddyMotion;
 
 import org.junit.Test;
 

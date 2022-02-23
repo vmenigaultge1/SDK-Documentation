@@ -1,6 +1,6 @@
-package com.example.tutorial_buddy_test;
+package com.example.TutoBuddyMotion;
 import com.bfr.buddysdk.BuddyApplication;
-import com.bfr.buddysdk.BuddySDK;
+
 public class BuddyTutorialTest extends BuddyApplication {
     @Override
     public void onCreate() {
